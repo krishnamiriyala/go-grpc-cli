@@ -7,17 +7,14 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	ref "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
-	//"github.com/golang/protobuf/proto"
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"strings"
-	//"time"
 
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"google.golang.org/grpc/credentials"
 	"time"
@@ -56,14 +53,14 @@ func dumpMethodAsProto(m *descriptor.MethodDescriptorProto) string {
 	buf.WriteString("rpc ")
 	buf.WriteString(*m.Name)
 	buf.WriteByte('(')
-	if m.ClientStreaming != nil && *m.ClientStreaming == true {
+	if m.ClientStreaming != nil && *m.ClientStreaming {
 		buf.WriteString("stream ")
 	}
 
 	buf.WriteString(strings.TrimLeftFunc(*m.InputType, trimDotFunc))
 	buf.WriteString(") returns (")
 
-	if m.ServerStreaming != nil && *m.ServerStreaming == true {
+	if m.ServerStreaming != nil && *m.ServerStreaming {
 		buf.WriteString("stream ")
 	}
 	buf.WriteString(strings.TrimLeftFunc(*m.OutputType, trimDotFunc))
@@ -100,7 +97,7 @@ func tlsConfig() *tls.Config {
 	cfg.Certificates = append(cfg.Certificates, crt)
 
 	if len(*ca) > 0 {
-		caFile, err := ioutil.ReadFile(*ca)
+		caFile, err := os.ReadFile(*ca)
 		if err != nil {
 			log.Fatalf("Can't read ca file: %v", err)
 		}
@@ -189,7 +186,7 @@ func serviceMethodsFromDescriptor(descs []*descriptor.FileDescriptorProto) servi
 			for _, method := range service.Method {
 				m := serviceMethod{
 					Method:  *method.Name,
-					Service: *desc.Package + "." + *service.Name,
+					Service: *service.Name,
 				}
 				if *l {
 					m.LongMethod = dumpMethodAsProto(method)
@@ -311,7 +308,7 @@ func main() {
 
 		found := false
 		for _, s := range sm {
-			if strings.Index(s.Method, *meth) != -1 {
+			if strings.Contains(s.Method, *meth) {
 				printResult(s)
 				found = true
 			}

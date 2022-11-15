@@ -1,0 +1,76 @@
+# golangci.com configuration
+# https://github.com/golangci/golangci/wiki/Configuration
+run:
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  deadline: 15m
+
+  linters:
+  disable-all: true
+  enable:
+    # Enabled By Default Linters
+    - asciicheck
+    # - bidichk
+    - bodyclose
+    # - contextcheck
+    - cyclop
+    - deadcode
+    - durationcheck
+    - errcheck
+    - errorlint
+    # - errchkjson
+    - exhaustive
+    # - exhaustivestruct
+    - exportloopref
+    - funlen
+    - gci
+    # - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    # - gosec
+    - gosimple
+    - govet
+    # - grouper
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nolintlint
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - structcheck
+    # - stylecheck
+    # - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+    # - wsl
+
+linters-settings:
+  funlen:
+    lines: 100
+    statements: 50
+  goconst:
+    min-len: 3
+    min-occurrences: 2
+  lll:
+    line-length: 180
+    tab-width: 1
+  misspell:
+    locale: US
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    rules:
+      - name: atomic
+      - name: line-length-limit
+        severity: error
+        arguments: [330]
